@@ -1,10 +1,12 @@
-package com.example.administrador.myapplication;
+package com.example.administrador.myapplication.controller;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+
+import com.example.administrador.myapplication.R;
 
 public class LoginActivity extends AppCompatActivity{
 
@@ -23,7 +25,7 @@ public class LoginActivity extends AppCompatActivity{
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent goToMainActivity = new Intent(LoginActivity.this, MainActivity.class);
+                Intent goToMainActivity = new Intent(LoginActivity.this, PersistClientActivity.class);
                 startActivity(goToMainActivity);
             }
         });

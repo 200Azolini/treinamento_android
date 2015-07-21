@@ -1,8 +1,11 @@
-package com.example.administrador.myapplication;
+package com.example.administrador.myapplication.controller;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
+
+import com.example.administrador.myapplication.model.entities.Client;
+import com.example.administrador.myapplication.R;
 
 import java.util.ArrayList;
 import java.util.List;
