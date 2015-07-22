@@ -40,6 +40,8 @@ public class PersistClientActivity extends AppCompatActivity{
             Client client = bindClient();
             client.save();
             Toast.makeText(PersistClientActivity.this, Client.getAll().toString(), Toast.LENGTH_LONG).show();
+
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }
