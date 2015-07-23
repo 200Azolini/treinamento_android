@@ -12,4 +12,8 @@
     <string name="phoneNumber">Phone Number</string>
     <string name="save">Save</string>
     <string name="adicionar">Add</string>
+    <string name="required_field">Required field</string>
+    <string name="success">Success!</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 </resources>
