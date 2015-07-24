@@ -4,16 +4,17 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.example.administrador.myapplication.model.persistence.MemoryClientRepository;
+import com.example.administrador.myapplication.model.persistence.SQLiteClientRepository;
 
 import java.io.Serializable;
 import java.util.List;
 
 public class Client implements Serializable, Parcelable{
-
+    private Integer id;
     private String name;
     private Integer age;
     private String address;
-    private String phoneNumber;
+    private Integer phoneNumber;
     private MemoryClientRepository memoryClientRepository;
 
     public Client(){
@@ -49,11 +50,11 @@ public class Client implements Serializable, Parcelable{
         this.address = address;
     }
 
-    public String getPhoneNumber() {
+    public Integer getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    public void setPhoneNumber(Integer phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
@@ -82,11 +83,11 @@ public class Client implements Serializable, Parcelable{
     }
 
     public void save(){
-        MemoryClientRepository.getInstance().save(this);
+        SQLiteClientRepository.getInstance().save(this);
     }
 
     public static List<Client> getAll(){
-        return MemoryClientRepository.getInstance().getAll();
+        return SQLiteClientRepository.getInstance().getAll();
     }
 
     @Override
@@ -101,7 +102,7 @@ public class Client implements Serializable, Parcelable{
     }
 
     public void delete() {
-        MemoryClientRepository.getInstance().delete(this);
+        SQLiteClientRepository.getInstance().delete(this);
     }
 
     @Override
@@ -111,18 +112,20 @@ public class Client implements Serializable, Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id == null ? -1 : id);
         dest.writeString(name == null ? "" : name);
         dest.writeInt(age == null ? -1 : age);
         dest.writeString(address == null ? "" : address);
-        dest.writeString(phoneNumber == null ? "" : phoneNumber);
+        dest.writeInt(phoneNumber == null ? -1 : phoneNumber);
     }
 
     public void readToParcel(Parcel in) {
+        id = in.readInt();
         name = in.readString();
         int partialAge = in.readInt();
         age = partialAge == -1 ? null : partialAge;
         address = in.readString();
-        phoneNumber = in.readString();
+        phoneNumber = in.readInt();
     }
 
     public static final Parcelable.Creator<Client> CREATOR = new Parcelable.Creator<Client>(){
@@ -133,4 +136,12 @@ public class Client implements Serializable, Parcelable{
             return new Client[size];
         }
     };
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Integer getId() {
+        return id;
+    }
 }

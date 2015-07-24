@@ -67,11 +67,13 @@ public class PersistClientActivity extends AppCompatActivity{
     }
 
     private void bindClient(){
-        client = new Client();
+        if(client == null){
+            client = new Client();
+        }
         client.setName(editTextName.getText().toString());
         client.setAge(Integer.valueOf(editTextAge.getText().toString()));
         client.setAddress(editTextAddress.getText().toString());
-        client.setPhoneNumber(editTextPhoneNumber.getText().toString());
+        client.setPhoneNumber(Integer.valueOf(editTextPhoneNumber.getText().toString()));
     }
 
     private void bindForm(Client client){

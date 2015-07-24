@@ -16,4 +16,8 @@
     <string name="success">Success!</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
+    <string name="confirm_delete">Deseja realmente excluir?</string>
+    <string name="confirm">Confirmation</string>
+    <string name="yes">Sim</string>
+    <string name="no">Não</string>
 </resources>
