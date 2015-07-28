@@ -13,7 +13,7 @@ public class Client implements Serializable, Parcelable{
     private Integer id;
     private String name;
     private Integer age;
-    private String address;
+    private ClientAddress address;
     private Integer phoneNumber;
     private MemoryClientRepository memoryClientRepository;
 
@@ -42,11 +42,11 @@ public class Client implements Serializable, Parcelable{
         this.age = age;
     }
 
-    public String getAddress() {
+    public ClientAddress getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(ClientAddress address) {
         this.address = address;
     }
 
@@ -115,8 +115,8 @@ public class Client implements Serializable, Parcelable{
         dest.writeInt(id == null ? -1 : id);
         dest.writeString(name == null ? "" : name);
         dest.writeInt(age == null ? -1 : age);
-        dest.writeString(address == null ? "" : address);
         dest.writeInt(phoneNumber == null ? -1 : phoneNumber);
+        dest.writeParcelable(address, flags);
     }
 
     public void readToParcel(Parcel in) {
@@ -124,8 +124,8 @@ public class Client implements Serializable, Parcelable{
         name = in.readString();
         int partialAge = in.readInt();
         age = partialAge == -1 ? null : partialAge;
-        address = in.readString();
         phoneNumber = in.readInt();
+        address = in.readParcelable(ClientAddress.class.getClassLoader());
     }
 
     public static final Parcelable.Creator<Client> CREATOR = new Parcelable.Creator<Client>(){

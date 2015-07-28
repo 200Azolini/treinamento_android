@@ -1,5 +1,6 @@
 package com.example.administrador.myapplication.controller;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -24,10 +25,14 @@ public class PersistClientActivity extends AppCompatActivity{
     private Client client;
     private EditText editTextName;
     private EditText editTextAge;
-    private EditText editTextAddress;
     private EditText editTextPhoneNumber;
     private EditText cep;
     private Button buttonFindCep;
+    private EditText editTextTipoDeLogradouro;
+    private EditText editTextLogradouro;
+    private EditText editTextBairro;
+    private EditText editTextCidade;
+    private EditText editTextEstado;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,8 +57,13 @@ public class PersistClientActivity extends AppCompatActivity{
     private void bindFields() {
         editTextName = (EditText) findViewById(R.id.editTextName);
         editTextAge = (EditText) findViewById(R.id.editTextAge);
-        editTextAddress = (EditText) findViewById(R.id.editTextAddress);
         editTextPhoneNumber = (EditText) findViewById(R.id.editTextPhoneNumber);
+        cep = (EditText) findViewById(R.id.cep);
+        editTextTipoDeLogradouro = (EditText) findViewById(R.id.editTextTipoDeLogradouro);
+        editTextLogradouro = (EditText) findViewById(R.id.editTextLogradouro);
+        editTextBairro = (EditText) findViewById(R.id.editTextBairro);
+        editTextCidade = (EditText) findViewById(R.id.editTextCidade);
+        editTextEstado = (EditText) findViewById(R.id.editTextEstado);
     }
 
     private void bindCepButton(){
@@ -77,7 +87,7 @@ public class PersistClientActivity extends AppCompatActivity{
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         if(item.getItemId() == R.id.menu_save){
-            if(FormHelper.requiredValidate(PersistClientActivity.this , editTextName, editTextAge, editTextAddress, editTextPhoneNumber)){
+            if(FormHelper.requiredValidate(PersistClientActivity.this , editTextName, editTextAge, editTextPhoneNumber)){
                 bindClient();
                 client.save();
                 Toast.makeText(PersistClientActivity.this, R.string.success, Toast.LENGTH_LONG).show();
@@ -94,24 +104,40 @@ public class PersistClientActivity extends AppCompatActivity{
         }
         client.setName(editTextName.getText().toString());
         client.setAge(Integer.valueOf(editTextAge.getText().toString()));
-        client.setAddress(editTextAddress.getText().toString());
+        ClientAddress address = new ClientAddress();
+        client.setAddress(address);
         client.setPhoneNumber(Integer.valueOf(editTextPhoneNumber.getText().toString()));
     }
 
     private void bindForm(Client client){
         editTextName.setText(client.getName());
         editTextAge.setText(client.getAge().toString());
-        editTextAddress.setText(client.getAddress());
         editTextPhoneNumber.setText(client.getPhoneNumber().toString());
     }
 
     private class getAddressByCep extends AsyncTask<String, Void, ClientAddress>{
+        private ProgressDialog progressDialog;
+        @Override
+        protected void onPreExecute() {
+            progressDialog = new ProgressDialog(PersistClientActivity.this);
+            progressDialog.setMessage(getString(R.string.loading));
+            progressDialog.show();
+        }
 
         @Override
         protected ClientAddress doInBackground(String... params) {
             return CepService.getAddressBy(params[0]);
         }
 
+        @Override
+        protected void onPostExecute(ClientAddress clientAddress) {
+            editTextTipoDeLogradouro.setText((clientAddress.getTipoDeLogradouro()));
+            editTextLogradouro.setText((clientAddress.getLogradouro()));
+            editTextBairro.setText((clientAddress.getBairro()));
+            editTextCidade.setText((clientAddress.getCidade()));
+            editTextEstado.setText((clientAddress.getEstado()));
+            progressDialog.dismiss();
+        }
     }
 
 }

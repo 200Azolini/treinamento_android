@@ -1,6 +1,9 @@
 package com.example.administrador.myapplication.model.entities;
 
-public class ClientAddress {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class ClientAddress implements Parcelable {
 
     private String cep;
     private String tipoDeLogradouro;
@@ -9,6 +12,14 @@ public class ClientAddress {
     private String cidade;
     private String estado;
 
+    public ClientAddress() {
+        super();
+    }
+
+    public ClientAddress(Parcel in) {
+        super();
+        readToParcel(in);
+    }
 
     public String getCep() {
         return cep;
@@ -57,4 +68,39 @@ public class ClientAddress {
     public void setEstado(String estado) {
         this.estado = estado;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(cep == null ? "" : cep);
+        dest.writeString(tipoDeLogradouro == null ? "" : tipoDeLogradouro);
+        dest.writeString(logradouro == null ? "" : logradouro);
+        dest.writeString(bairro == null ? "" : bairro);
+        dest.writeString(cidade == null ? "" : cidade);
+        dest.writeString(estado == null ? "" : estado);
+    }
+
+    public void readToParcel(Parcel in) {
+        cep = in.readString();
+        tipoDeLogradouro = in.readString();
+        logradouro = in.readString();
+        bairro = in.readString();
+        cidade = in.readString();
+        estado = in.readString();
+    }
+
+    public static final Parcelable.Creator<ClientAddress> CREATOR = new Parcelable.Creator<ClientAddress>() {
+        public ClientAddress createFromParcel(Parcel source) {
+            return new ClientAddress(source);
+        }
+
+        public ClientAddress[] newArray(int size) {
+            return new ClientAddress[size];
+        }
+    };
+
 }

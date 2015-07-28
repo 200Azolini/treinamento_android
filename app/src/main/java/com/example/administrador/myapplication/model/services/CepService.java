@@ -18,9 +18,9 @@ public final class CepService {
     }
 
     public static ClientAddress getAddressBy(String cep){
-    ClientAddress address = null;
+    ClientAddress address = new ClientAddress();
         try {
-            URL url = new URL(URL);
+            URL url = new URL(URL + cep);
             final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
