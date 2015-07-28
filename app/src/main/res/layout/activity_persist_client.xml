@@ -31,4 +31,16 @@
         android:inputType="phone"
         android:hint="@string/phoneNumber"/>
 
+    <EditText
+        android:id="@+id/cep"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/cep"/>
+
+    <Button
+        android:id="@+id/buttonFindCep"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/find"/>
+
 </LinearLayout>

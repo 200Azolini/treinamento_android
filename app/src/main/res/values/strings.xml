@@ -20,4 +20,6 @@
     <string name="confirm">Confirmation</string>
     <string name="yes">Sim</string>
     <string name="no">Não</string>
+    <string name="cep">Cep</string>
+    <string name="find">Find</string>
 </resources>
