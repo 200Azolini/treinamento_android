@@ -1,13 +1,20 @@
 package com.example.administrador.myapplication.controller;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -56,6 +63,25 @@ public class PersistClientActivity extends AppCompatActivity{
 
     private void bindFields() {
         editTextName = (EditText) findViewById(R.id.editTextName);
+        editTextName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.mipmap.ic_edittext_client, 0);
+        editTextName.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int DRAWABLE_LEFT = 0;
+                final int DRAWABLE_TOP = 1;
+                final int DRAWABLE_RIGHT = 2;
+                final int DRAWABLE_BOTTOM = 3;
+
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (event.getRawX() >= (editTextName.getRight() - editTextName.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                        final Intent goToSOContacts = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+                        goToSOContacts.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE); // Show user only contacts w/ phone numbers
+                        startActivityForResult(goToSOContacts, 999);
+                    }
+                }
+                return false;
+            }
+        });
         editTextAge = (EditText) findViewById(R.id.editTextAge);
         editTextPhoneNumber = (EditText) findViewById(R.id.editTextPhoneNumber);
         cep = (EditText) findViewById(R.id.cep);
@@ -64,6 +90,34 @@ public class PersistClientActivity extends AppCompatActivity{
         editTextBairro = (EditText) findViewById(R.id.editTextBairro);
         editTextCidade = (EditText) findViewById(R.id.editTextCidade);
         editTextEstado = (EditText) findViewById(R.id.editTextEstado);
+    }
+
+    /**
+     * @see <a href="http://developer.android.com/training/basics/intents/result.html">Getting a Result from an Activity</a>
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 999) {
+            if (resultCode == Activity.RESULT_OK) {
+                try {
+                    final Uri contactUri = data.getData();
+                    final String[] projection = {
+                            ContactsContract.CommonDataKinds.Identity.DISPLAY_NAME,
+                            ContactsContract.CommonDataKinds.Phone.NUMBER
+                    };
+                    final Cursor cursor = getContentResolver().query(contactUri, projection, null, null, null);
+                    cursor.moveToFirst();
+
+                    editTextName.setText(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Identity.DISPLAY_NAME)));
+                    editTextPhoneNumber.setText(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+
+                    cursor.close();
+                } catch (Exception e) {
+                    Log.d("TAG", "Unexpected error");
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void bindCepButton(){
@@ -86,8 +140,8 @@ public class PersistClientActivity extends AppCompatActivity{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
-        if(item.getItemId() == R.id.menu_save){
-            if(FormHelper.requiredValidate(PersistClientActivity.this , editTextName, editTextAge, editTextPhoneNumber)){
+        if(item.getItemId() == R.id.menu_save) {
+            if(FormHelper.requiredValidate(PersistClientActivity.this, editTextName, editTextAge, editTextPhoneNumber)){
                 bindClient();
                 client.save();
                 Toast.makeText(PersistClientActivity.this, R.string.success, Toast.LENGTH_LONG).show();
@@ -104,15 +158,27 @@ public class PersistClientActivity extends AppCompatActivity{
         }
         client.setName(editTextName.getText().toString());
         client.setAge(Integer.valueOf(editTextAge.getText().toString()));
-        ClientAddress address = new ClientAddress();
-        client.setAddress(address);
         client.setPhoneNumber(Integer.valueOf(editTextPhoneNumber.getText().toString()));
+        ClientAddress address = new ClientAddress();
+        address.setCep(cep.getText().toString());
+        address.setTipoDeLogradouro(editTextTipoDeLogradouro.getText().toString());
+        address.setLogradouro(editTextLogradouro.getText().toString());
+        address.setBairro(editTextBairro.getText().toString());
+        address.setCidade(editTextCidade.getText().toString());
+        address.setEstado(editTextEstado.getText().toString());
+        client.setAddress(address);
     }
 
     private void bindForm(Client client){
         editTextName.setText(client.getName());
         editTextAge.setText(client.getAge().toString());
         editTextPhoneNumber.setText(client.getPhoneNumber().toString());
+        cep.setText(client.getAddress().getCep().toString());
+        editTextTipoDeLogradouro.setText(client.getAddress().getTipoDeLogradouro().toString());
+        editTextLogradouro.setText(client.getAddress().getLogradouro().toString());
+        editTextBairro.setText(client.getAddress().getBairro().toString());
+        editTextCidade.setText(client.getAddress().getCidade().toString());
+        editTextEstado.setText(client.getAddress().getEstado().toString());
     }
 
     private class getAddressByCep extends AsyncTask<String, Void, ClientAddress>{
