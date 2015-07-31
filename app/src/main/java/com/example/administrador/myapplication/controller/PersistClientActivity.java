@@ -34,7 +34,6 @@ public class PersistClientActivity extends AppCompatActivity{
     private EditText editTextAge;
     private EditText editTextPhoneNumber;
     private EditText cep;
-    private Button buttonFindCep;
     private EditText editTextTipoDeLogradouro;
     private EditText editTextLogradouro;
     private EditText editTextBairro;
@@ -47,7 +46,6 @@ public class PersistClientActivity extends AppCompatActivity{
         setContentView(R.layout.activity_persist_client);
 
         bindFields();
-        bindCepButton();
 
         Bundle extras = getIntent().getExtras();
 
@@ -85,6 +83,23 @@ public class PersistClientActivity extends AppCompatActivity{
         editTextAge = (EditText) findViewById(R.id.editTextAge);
         editTextPhoneNumber = (EditText) findViewById(R.id.editTextPhoneNumber);
         cep = (EditText) findViewById(R.id.cep);
+        cep.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_search, 0);
+        cep.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int DRAWABLE_LEFT = 0;
+                final int DRAWABLE_TOP = 1;
+                final int DRAWABLE_RIGHT = 2;
+                final int DRAWABLE_BOTTOM = 3;
+
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (event.getRawX() >= (cep.getRight() - cep.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                        new getAddressByCep().execute((cep.getText().toString()));
+                    }
+                }
+                return false;
+            }
+       });
         editTextTipoDeLogradouro = (EditText) findViewById(R.id.editTextTipoDeLogradouro);
         editTextLogradouro = (EditText) findViewById(R.id.editTextLogradouro);
         editTextBairro = (EditText) findViewById(R.id.editTextBairro);
@@ -119,19 +134,7 @@ public class PersistClientActivity extends AppCompatActivity{
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-
-    private void bindCepButton(){
-        cep = (EditText) findViewById(R.id.cep);
-        buttonFindCep = (Button) findViewById(R.id.buttonFindCep);
-        buttonFindCep.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new getAddressByCep().execute((cep.getText().toString()));
-            }
-        });
-    }
-
-
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         this.getMenuInflater().inflate(R.menu.menu_client_persist, menu);
